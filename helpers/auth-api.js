@@ -2,9 +2,6 @@ import {apiVT} from "../helpers/api";
 
 export const authLogin = async ( user ) => {
     try {
-
-        console.log(user);
-
         const resp = await apiVT.post('/Login', user, {
             headers: {
                 'content-type': 'application/json'
@@ -15,8 +12,8 @@ export const authLogin = async ( user ) => {
 
     
     } catch (error) {
-        console.log(error);
-        return error;    
+        console.log(error.response.status);
+        return error.response.status;    
     }
 
 

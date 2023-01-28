@@ -14,10 +14,7 @@ export const getAllUsers = async () => {
             });
             
             return resp;
-
         }
-        
-
     } catch (error) {
         return error;
     }

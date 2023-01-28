@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Item, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { getAllUsers } from '../../../helpers/user-api'
+import { UsuarioCard } from '../components/UsuarioCard'
 
 export const UsuariosScreen = ({ navigation }) => {
 
@@ -10,7 +11,6 @@ export const UsuariosScreen = ({ navigation }) => {
 
         getAllUsers()
             .then((resp) => {
-                console.log(resp);
                 if (resp.status == 200) {
                     setUsuarios(resp.data);
                     }
@@ -19,7 +19,7 @@ export const UsuariosScreen = ({ navigation }) => {
         return () => {
             setUsuarios([]);
         }
-    })
+    }, []);
 
 
     return (
@@ -33,13 +33,11 @@ export const UsuariosScreen = ({ navigation }) => {
 
 
             <View style={styles.listUsers}>
-                {
-                    usuarios.map((user) => (
-                        <View key={user.id_usuario}>
-                            <Text>{user.usu_login}</Text>
-                        </View>
-                    ))
-                }
+                <FlatList 
+                    style={styles.flatList}
+                    data={usuarios}
+                    renderItem={({item}) => <UsuarioCard user={item}/>}
+                />
             </View>
 
         </View>
@@ -69,5 +67,13 @@ const styles = StyleSheet.create({
         padding: 10,
         color: '#fff',
 
+    },
+    listUsers: {
+        marginBottom: 30,
+        marginLeft: 15,
+        marginRight: 15
+    },
+    flatList: {
+        margin: 15
     }
 })

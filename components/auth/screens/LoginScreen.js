@@ -2,28 +2,36 @@ import React, { useState } from 'react'
 import { Alert, Button, StyleSheet, TouchableOpacity, Text, TextInput, View } from 'react-native'
 import { authLogin } from '../../../helpers/auth-api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
+import { Message } from '../components/Message';
 
-export const LoginScreen = ({navigation}) => {
+export const LoginScreen = ({ navigation }) => {
 
     const [username, setUsername] = useState();
     const [password, setPassword] = useState();
+    const [status, setStatus] = useState(0);
 
-    
+
     const onPressLogin = async () => {
 
         await authLogin({
             usu_login: username,
-            usu_pass: password})
-            .then(( resp ) => {
+            usu_pass: password
+        })
+            .then((resp) => {
                 if (resp?.status == 200) {
-                    console.log(resp.data.token);
                     AsyncStorage.setItem('token', resp.data.token);
-                    navigation.replace('Home');
+                    console.log(resp);
+                    setStatus(200);
+
+                    setTimeout(() => {
+                        navigation.replace('Home');
+                    }, 500);
+
                 }
             })
             .catch((err) => {
-                console.log(err);
+   
+                setStatus(err);
             });
     }
 
@@ -49,6 +57,19 @@ export const LoginScreen = ({navigation}) => {
                 <TouchableOpacity onPress={onPressLogin} style={styles.appButtonContainer}>
                     <Text style={styles.appButtonText}>Entrar</Text>
                 </TouchableOpacity>
+
+                {
+
+                    (status === 200 && status !== null) && <Message msg={{ status: 200 }} />
+
+                }
+                {
+                    ((status === 400 || status === 401) && status !== 0) && <Message msg={{ status: status }} />
+                }
+
+
+
+
             </View>
         </View>
     )
